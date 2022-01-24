@@ -1,35 +1,60 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { TestBed, waitForAsync } from '@angular/core/testing';
+
 import { AppComponent } from './app.component';
+import { ProductComponent } from './product/product.component'
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       declarations: [
         AppComponent
       ],
-    }).compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    });
   });
 
-  it('should create the app', () => {
+  it('should create the app', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
+    const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  });
+  }));
 
-  it(`should have as title 'zenika-shop'`, () => {
+  it('should have a total starting at 0', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('zenika-shop');
-  });
+    const app = fixture.debugElement.componentInstance;
+    expect(app.total).toEqual(0);
+  }));
 
-  it('should render title', () => {
+  it('should have the total bound in the header', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    const compiled = fixture.debugElement.nativeElement;
+
+    app.total = 42;
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('zenika-shop app is running!');
-  });
+    expect(compiled.querySelector('header').textContent).toContain('42€');
+  }));
+
+  it('should update price with the product price', waitForAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+
+    app.total = 42;
+    app.updatePrice(666);
+    expect(app.total).toBe(42 + 666);
+  }));
+
+  it('should bind each product component with its product', waitForAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    const compiled = fixture.debugElement.nativeElement;
+
+    fixture.detectChanges();
+    const products = compiled.querySelectorAll('app-product');
+    products.forEach((productComponent: ProductComponent, i: number) => {
+      expect(productComponent.product).toBe(app.products[i]);
+    });
+  }));
+
 });
