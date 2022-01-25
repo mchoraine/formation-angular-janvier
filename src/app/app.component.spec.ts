@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
@@ -6,6 +6,11 @@ import { ProductComponent } from './product/product.component'
 import { Product } from './model/product'
 import { CustomerService } from './services/customer.service'
 import { ProductService } from './services/product.service'
+import { SortProductPipe } from './product/sort-product.pipe'
+import { registerLocaleData } from '@angular/common'
+import localeFr from '@angular/common/locales/fr'
+
+registerLocaleData(localeFr);
 
 class FakeCustomerService extends CustomerService {
   private _total!: number
@@ -28,7 +33,7 @@ class FakeCustomerService extends CustomerService {
 }
 
 class FakeProductService extends ProductService {
-  private _products!: Product[]
+  private _products: Product[] = []
 
   withProducts(products: Product[]) {
     this._products = products
@@ -48,7 +53,8 @@ describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        SortProductPipe
       ],
       providers: [
         {
@@ -62,6 +68,10 @@ describe('AppComponent', () => {
         {
           provide: ProductService,
           useValue: productService
+        },
+        {
+          provide: LOCALE_ID,
+          useValue: 'fr-FR'
         }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -98,7 +108,7 @@ describe('AppComponent', () => {
     customerService.withTotal(42)
 
     fixture.detectChanges();
-    expect(compiled.querySelector('header').textContent).toContain('42€');
+    expect(compiled.querySelector('header').textContent).toContain('42,00 €');
   }));
 
   it('should decrease product stock on add to basket', waitForAsync(() => {

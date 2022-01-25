@@ -7,13 +7,11 @@ import { CustomerService } from './services/customer.service'
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [
-    { provide: "title", useValue: 'Welcome to Zenika Ecommerce' }
-  ]
 })
 export class AppComponent implements OnInit {
 
   products: Product[] = [];
+  sortKey: keyof Product = 'title'
 
   constructor (
     @Inject("title") public title: string,

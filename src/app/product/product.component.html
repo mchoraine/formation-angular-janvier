@@ -2,7 +2,7 @@
   <div data-test-id="my-product" class="thumbnail" [ngClass]="{'last': productService.isTheLast(product)}">
     <img [src]="product.photo" alt="">
     <div class="caption">
-      <h3>{{product.title}} - {{product.price}}€</h3>
+      <h3>{{product.title | uppercase }} - {{product.price | currency:'€'}}</h3>
       <p>{{product.description}}</p>
       <p>
         <button class="btn btn-primary" (click)="addToBasketClick()">Add to Cart</button>
