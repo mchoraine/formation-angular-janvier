@@ -4,16 +4,77 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { ProductComponent } from './product/product.component'
 import { Product } from './model/product'
+import { CustomerService } from './services/customer.service'
+import { ProductService } from './services/product.service'
+
+class FakeCustomerService extends CustomerService {
+  private _total!: number
+
+  constructor () {
+    super({} as ProductService)
+  }
+
+  withTotal(total: number) {
+    this._total = total;
+  }
+
+  override getTotal (): number {
+    return this._total;
+  }
+
+  override addProduct (product: Product) {
+
+  }
+}
+
+class FakeProductService extends ProductService {
+  private _products!: Product[]
+
+  withProducts(products: Product[]) {
+    this._products = products
+  }
+
+  override getProducts (): Product[] {
+    return this._products
+  }
+
+}
 
 describe('AppComponent', () => {
+
+  let customerService = new FakeCustomerService();
+  let productService = new FakeProductService();
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
       ],
+      providers: [
+        {
+          provide: 'title',
+          useValue: 'Hello world'
+        },
+        {
+          provide: CustomerService,
+          useValue: customerService
+        },
+        {
+          provide: ProductService,
+          useValue: productService
+        }
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
   });
+
+  it('display title', waitForAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges()
+
+    const title = fixture.nativeElement.querySelector("header")
+    expect(title.textContent).toContain("Hello world");
+  }));
 
   it('should create the app', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -24,42 +85,38 @@ describe('AppComponent', () => {
   it('should have a total starting at 0', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
+
+    customerService.withTotal(0)
+
     expect(app.total).toEqual(0);
   }));
 
   it('should have the total bound in the header', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
     const compiled = fixture.debugElement.nativeElement;
 
-    app.total = 42;
+    customerService.withTotal(42)
+
     fixture.detectChanges();
     expect(compiled.querySelector('header').textContent).toContain('42€');
-  }));
-
-  it('should update price with the product price', waitForAsync(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app: AppComponent = fixture.debugElement.componentInstance;
-
-    app.total = 42;
-    app.addToBasket({ stock: 2, price: 666 } as Product);
-    expect(app.total).toBe(42 + 666);
   }));
 
   it('should decrease product stock on add to basket', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app: AppComponent = fixture.debugElement.componentInstance;
-    const productAddedToBasket = { stock: 2, price: 666 } as Product
+    let addProductSpy = jest.spyOn(customerService, 'addProduct')
 
-    app.addToBasket(productAddedToBasket);
+    app.addToBasket({} as Product);
 
-    expect(productAddedToBasket.stock).toBe(1);
+    expect(addProductSpy).toHaveBeenCalled()
   }));
 
   it('should bind each product component with its product', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     const compiled = fixture.debugElement.nativeElement;
+
+    productService.withProducts([{} as Product])
 
     fixture.detectChanges();
     const products = compiled.querySelectorAll('app-product');
@@ -72,11 +129,13 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app: AppComponent = fixture.debugElement.componentInstance;
     const compiled = fixture.debugElement.nativeElement;
-    app.products[0].stock = 0;
+
+    let products = [{stock: 1} as Product, {stock: 0} as Product]
+    productService.withProducts(products)
 
     fixture.detectChanges();
-    const products = compiled.querySelectorAll('app-product');
-    expect(products.length).toBe(app.products.length - 1)
+    const productsComponent = compiled.querySelectorAll('app-product');
+    expect(productsComponent.length).toBe(products.length - 1)
   }));
 
 });

@@ -1,5 +1,5 @@
 <div class="col-md-3 col-sm-6 product-item">
-  <div data-test-id="my-product" class="thumbnail" [ngClass]="{'last': hasOneInStock()}">
+  <div data-test-id="my-product" class="thumbnail" [ngClass]="{'last': productService.isTheLast(product)}">
     <img [src]="product.photo" alt="">
     <div class="caption">
       <h3>{{product.title}} - {{product.price}}€</h3>

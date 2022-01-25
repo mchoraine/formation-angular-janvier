@@ -3,7 +3,7 @@
 <div class="container">
 
   <header class="jumbotron hero-spacer">
-    <h1>Welcome to Zenika Ecommerces</h1>
+    <h1>{{title}}</h1>
     <p>Your basket amounts to {{total}}€</p>
     <p><a class="btn btn-primary btn-large">See my basket</a></p>
   </header>
@@ -18,7 +18,8 @@
 
   <div class="row text-center">
     <ng-container *ngFor="let item of products">
-      <app-product *ngIf="item.stock > 0" [product]="item" (addToBasket)="addToBasket($event)"></app-product>
+      <app-product *ngIf="isAvailable(item)" [product]="item"
+                   (addToBasket)="addToBasket($event)"></app-product>
     </ng-container>
   </div>
 

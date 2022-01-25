@@ -16,7 +16,9 @@ import { MenuComponent } from './menu/menu.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

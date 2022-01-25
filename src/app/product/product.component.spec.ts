@@ -1,16 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProductComponent } from './product.component';
+import { ProductService } from '../services/product.service'
+import { Product } from '../model/product'
 
 const testProduct = { title: 'title', description: 'description', photo: 'photo', price: 42, stock: 2 };
+
+class FakeProductService extends ProductService {
+  private _isTheLast!: boolean
+
+  withIsTheLast(isTheLAst: boolean) {
+    this._isTheLast = isTheLAst
+  }
+
+  override isTheLast (product: Product): boolean {
+    return this._isTheLast;
+  }
+}
 
 describe('ProductComponent', () => {
   let component: ProductComponent;
   let fixture: ComponentFixture<ProductComponent>;
+  let service = new FakeProductService();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ProductComponent]
+      declarations: [ProductComponent],
+      providers: [
+        {
+          provide: ProductService,
+          useValue: service
+        }
+      ]
     });
   });
 
@@ -39,24 +60,19 @@ describe('ProductComponent', () => {
   });
 
   it('should not add "last" class if stock > 1', () => {
-    component.product.stock = 2;
+    service.withIsTheLast(false);
+
     fixture.detectChanges();
     const thumbnail = fixture.nativeElement.querySelector('.thumbnail');
     expect(thumbnail.classList).not.toContain('last');
   });
 
   it('should add "last" class if stock == 1', () => {
-    component.product.stock = 1;
+    service.withIsTheLast(true);
+
     fixture.detectChanges();
     const thumbnail = fixture.nativeElement.querySelector('[data-test-id="my-product"]');
     expect(thumbnail.classList).toContain('last');
   });
 
-  it('should add "last" class if stock == 1', () => {
-    component.product.stock = 1;
-
-    const hasOneInStock = component.hasOneInStock()
-
-    expect(hasOneInStock).toBeTruthy();
-  });
 });
