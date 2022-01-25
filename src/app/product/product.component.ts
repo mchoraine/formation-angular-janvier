@@ -9,9 +9,13 @@ import { Product } from '../model/product'
 export class ProductComponent {
 
   @Input() product!: Product;
-  @Output() addToBasket = new EventEmitter<number>();
+  @Output() addToBasket = new EventEmitter<Product>();
 
   addToBasketClick () {
-    this.addToBasket.emit(this.product.price)
+    this.addToBasket.emit(this.product)
+  }
+
+  hasOneInStock() {
+    return this.product.stock === 1;
   }
 }

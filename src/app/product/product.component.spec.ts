@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProductComponent } from './product.component';
-import { Product } from '../model/product';
 
-const testProduct = { title: 'title', description: 'description', photo: 'photo', price: 42 };
+const testProduct = { title: 'title', description: 'description', photo: 'photo', price: 42, stock: 2 };
 
 describe('ProductComponent', () => {
   let component: ProductComponent;
@@ -36,6 +35,28 @@ describe('ProductComponent', () => {
     jest.spyOn(component.addToBasket, 'emit');
     const button = fixture.nativeElement.querySelector('button');
     button.click();
-    expect(component.addToBasket.emit).toHaveBeenCalledWith(testProduct.price);
+    expect(component.addToBasket.emit).toHaveBeenCalledWith(testProduct);
+  });
+
+  it('should not add "last" class if stock > 1', () => {
+    component.product.stock = 2;
+    fixture.detectChanges();
+    const thumbnail = fixture.nativeElement.querySelector('.thumbnail');
+    expect(thumbnail.classList).not.toContain('last');
+  });
+
+  it('should add "last" class if stock == 1', () => {
+    component.product.stock = 1;
+    fixture.detectChanges();
+    const thumbnail = fixture.nativeElement.querySelector('[data-test-id="my-product"]');
+    expect(thumbnail.classList).toContain('last');
+  });
+
+  it('should add "last" class if stock == 1', () => {
+    component.product.stock = 1;
+
+    const hasOneInStock = component.hasOneInStock()
+
+    expect(hasOneInStock).toBeTruthy();
   });
 });
