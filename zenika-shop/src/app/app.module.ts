@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './pages/home/home.component';
 import { BasketComponent } from './pages/basket/basket.component';
 import { DetailProductComponent } from './pages/detail-product/detail-product.component'
+import { FormsModule } from '@angular/forms'
 
 registerLocaleData(localeFr);
 
@@ -30,7 +31,8 @@ registerLocaleData(localeFr);
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     { provide: "title", useValue: 'Welcome to Zenika Ecommerce' },
