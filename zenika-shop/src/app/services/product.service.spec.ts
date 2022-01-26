@@ -1,22 +1,29 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProductService } from './product.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import { Product } from '../model/product'
 
 describe('ProductService', () => {
   let service : ProductService;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ProductService]
+      providers: [ProductService],
+      imports: [HttpClientTestingModule]
     });
     service = TestBed.inject(ProductService);
   });
 
   it('should be created with 4 products',
-    () => {
+    waitForAsync(() => {
+      let http = TestBed.inject(HttpTestingController)
       expect(service).toBeTruthy();
-      expect(service.getProducts().length).toBe(4);
+      service.getProducts().subscribe((products) => {
+        expect(products.length).toBe(1);
+      })
+      http.expectOne("http://ec2-13-38-118-140.eu-west-3.compute.amazonaws.com:8080/rest/products").flush([{} as Product])
     }
-  );
+  ));
 
   [{stock: 0, isTheLast: false}, {stock: 1, isTheLast: true} ,{stock: 2, isTheLast: false}, {stock: 100, isTheLast: false}].forEach(({stock, isTheLast}) =>
     it(`should isTheLast return ${isTheLast} if stock is ${stock}`,

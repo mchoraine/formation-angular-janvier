@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Product } from './model/product'
 import { ProductService } from './services/product.service'
 import { CustomerService } from './services/customer.service'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import { CustomerService } from './services/customer.service'
 })
 export class AppComponent implements OnInit {
 
-  products: Product[] = [];
+  products$!: Observable<Product[]>;
   sortKey: keyof Product = 'title'
 
   constructor (
@@ -20,11 +21,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit (): void {
-    this.products = this.productService.getProducts()
+    this.products$ = this.productService.getProducts()
   }
 
   addToBasket (product: Product) {
-    this.customerService.addProduct(product)
+    this.customerService.addProduct(product).subscribe()
   }
 
   get total () {

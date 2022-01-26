@@ -9,6 +9,8 @@ import { ProductService } from './services/product.service'
 import { SortProductPipe } from './product/sort-product.pipe'
 import { registerLocaleData } from '@angular/common'
 import localeFr from '@angular/common/locales/fr'
+import { HttpClient } from '@angular/common/http'
+import { Observable, of } from 'rxjs'
 
 registerLocaleData(localeFr);
 
@@ -16,7 +18,7 @@ class FakeCustomerService extends CustomerService {
   private _total!: number
 
   constructor () {
-    super({} as ProductService)
+    super({} as ProductService, {} as HttpClient)
   }
 
   withTotal(total: number) {
@@ -28,19 +30,23 @@ class FakeCustomerService extends CustomerService {
   }
 
   override addProduct (product: Product) {
-
+    return of({} as Product)
   }
 }
 
 class FakeProductService extends ProductService {
   private _products: Product[] = []
 
+  constructor () {
+    super({} as HttpClient)
+  }
+
   withProducts(products: Product[]) {
     this._products = products
   }
 
-  override getProducts (): Product[] {
-    return this._products
+  override getProducts (): Observable<Product[]> {
+    return of(this._products)
   }
 
 }

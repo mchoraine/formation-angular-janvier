@@ -3,10 +3,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProductComponent } from './product.component';
 import { ProductService } from '../services/product.service'
 import { Product } from '../model/product'
+import { HttpClient } from '@angular/common/http'
 
 const testProduct = { title: 'title', description: 'description', photo: 'photo', price: 42, stock: 2 };
 
 class FakeProductService extends ProductService {
+
+  constructor () {
+    super({} as HttpClient)
+  }
   private _isTheLast!: boolean
 
   withIsTheLast(isTheLAst: boolean) {

@@ -10,6 +10,7 @@ import { LOCALE_ID } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { SortProductPipe } from './product/sort-product.pipe';
+import { HttpClientModule } from '@angular/common/http'
 
 registerLocaleData(localeFr);
 
@@ -22,7 +23,8 @@ registerLocaleData(localeFr);
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [
     { provide: "title", useValue: 'Welcome to Zenika Ecommerce' },
