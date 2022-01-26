@@ -5,7 +5,7 @@ import { ProductService } from '../services/product.service'
 import { Product } from '../model/product'
 import { HttpClient } from '@angular/common/http'
 
-const testProduct = { title: 'title', description: 'description', photo: 'photo', price: 42, stock: 2 };
+const testProduct = { title: 'title', description: 'description', photo: 'photo', price: 42, stock: 2, id: '1' };
 
 class FakeProductService extends ProductService {
 
@@ -49,7 +49,7 @@ describe('ProductComponent', () => {
 
   it('should bind title and price in the h3', () => {
     const h3Content = fixture.nativeElement.querySelector('h3').textContent;
-    expect(h3Content).toContain(testProduct.title);
+    expect(h3Content).toContain(testProduct.title.toLocaleUpperCase());
   });
 
   it('should bind the photo url', () => {

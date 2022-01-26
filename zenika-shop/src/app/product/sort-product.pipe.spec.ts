@@ -9,14 +9,14 @@ describe('SortProductPipe', () => {
   it('should sort objects by property in argument', () => {
     const pipe = new SortProductPipe();
     const data = [
-      { title: 'zyxw', description: '', photo: '', stock: 0, price: 0 },
-      { title: '1234', description: '', photo: '', stock: 0, price: 0 },
-      { title: 'abcd', description: '', photo: '', stock: 0, price: 0 }
+      { title: 'zyxw', description: '', photo: '', stock: 0, price: 0, id: '' },
+      { title: '1234', description: '', photo: '', stock: 0, price: 0, id: '' },
+      { title: 'abcd', description: '', photo: '', stock: 0, price: 0, id: '' }
     ];
     const expected = [
-      { title: '1234', description: '', photo: '', stock: 0, price: 0 },
-      { title: 'abcd', description: '', photo: '', stock: 0, price: 0 },
-      { title: 'zyxw', description: '', photo: '', stock: 0, price: 0 }
+      { title: '1234', description: '', photo: '', stock: 0, price: 0, id: '' },
+      { title: 'abcd', description: '', photo: '', stock: 0, price: 0, id: '' },
+      { title: 'zyxw', description: '', photo: '', stock: 0, price: 0, id: '' }
     ];
     expect(pipe.transform(data, 'title')).toEqual(expected);
   });

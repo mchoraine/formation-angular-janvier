@@ -3,8 +3,8 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { CustomerService } from './customer.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
 
-const product1 = { title: 'title', description: 'description', photo: 'photo', price: 42, stock: 0 };
-const product2 = { title: 'title', description: 'description', photo: 'photo', price: 666, stock: 0 };
+const product1 = { title: 'title', description: 'description', photo: 'photo', price: 42, stock: 0, id: '' };
+const product2 = { title: 'title', description: 'description', photo: 'photo', price: 666, stock: 0, id: '' };
 
 describe('CustomerService', () => {
   let service: CustomerService;
@@ -42,9 +42,17 @@ describe('CustomerService', () => {
 
   it('should calculate the total price when using getTotal',
     () => {
-      service.addProduct(product1);
-      service.addProduct(product2);
+      let http = TestBed.inject(HttpTestingController)
+
+      service.addProduct(product1).subscribe();
+      service.addProduct(product2).subscribe();
+
+      let requests = http.match("http://ec2-13-38-118-140.eu-west-3.compute.amazonaws.com:8080/rest/basket")
+      requests[0].flush(null)
+      requests[1].flush(null)
+
       expect(service.getTotal()).toBe(product1.price + product2.price);
+
     }
   );
 

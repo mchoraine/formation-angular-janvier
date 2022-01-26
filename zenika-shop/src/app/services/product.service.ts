@@ -25,4 +25,8 @@ export class ProductService {
   decreaseStock(product: Product) {
     product.stock--;
   }
+
+  getProduct (id: string) {
+    return this.http.get<Product>(`http://ec2-13-38-118-140.eu-west-3.compute.amazonaws.com:8080/rest/products/${id}`);
+  }
 }
